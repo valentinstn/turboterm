@@ -45,13 +45,38 @@
 * **Markdown:** Add a basic Markdown-to-ANSI renderer implemented entirely in Rust.
 
 ### Milestone 4: Global Distribution
-* **Automation:** GitHub Actions workflow using `maturin-action`.
-* **Matrix:** Build wheels for Windows (x64), MacOS (Universal), and Linux (manylinux/musllinux).
-* **Quality:** Generate `.pyi` type stubs automatically for 100% IDE type-safety.
+
+*   **Automation:** GitHub Actions workflow using `maturin-action`.
+
+*   **Matrix:** Build wheels for Windows (x64), MacOS (Universal), and Linux (manylinux/musllinux).
+
+*   **Quality:** Generate `.pyi` type stubs automatically for 100% IDE type-safety.
+
+
+
+### Milestone 5: CLI Framework (Argparse Replacement)
+
+*   **Task:** Implement a Rust-powered, Python-friendly CLI argument parsing framework that replaces `argparse` with rich styling and interactive capabilities.
+
+*   **Pythonic API:** Decorator/Class-based argument definition similar to `Typer` or `Click`, leveraging Python type hints.
+
+*   **Rust Parsing Engine:** Core parsing logic in Rust for performance and robust validation (`clap` or `pico-args` integration).
+
+*   **Styled Help Output:** Automatically generate beautifully styled help messages (syntax highlighting, styled descriptions, tables) using TurboTerm's existing lexer and table rendering.
+
+*   **Interactive Prompts:** Provide styled prompts for missing arguments, confirmations, choices, and text input using `ansiterm` or similar.
+
+*   **`console` Integration:** Expose `console.command()`, `console.argument()`, `console.option()`, and `console.run()` for a seamless user experience.
+
+
 
 ---
 
+
+
 ## 4. Performance Targets
+
+
 | Metric | Target | vs. Competitors |
 | :--- | :--- | :--- |
 | **Import Time** | < 5ms | ~20x faster than Rich |

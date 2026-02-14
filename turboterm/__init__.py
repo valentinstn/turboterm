@@ -1,2 +1,2 @@
-from .turboterm import apply_styles, PyTable # Expose Rust functions directly
+from .turboterm import apply_styles, PyTable
 from .console import console

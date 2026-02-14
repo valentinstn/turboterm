@@ -1,4 +1,5 @@
-from .turboterm import apply_styles, PyTable, render_markdown_to_ansi
+from .turboterm import apply_styles, PyTable
+from .cli import Argument, Option, command, run
 
 class Console:
     def print(self, text: str):
@@ -11,10 +12,12 @@ class Console:
         for row_data in data:
             table_instance.add_row(row_data)
         print(table_instance.to_string())
-
-    def markdown(self, text: str):
-        """Renders Markdown to ANSI formatted text and prints it to the console."""
-        print(render_markdown_to_ansi(text))
+    
+    # Expose cli argument parsing functionality
+    argument = Argument
+    option = Option
+    command = command
+    run = run
 
 # Pre-configured console singleton
 console = Console()
