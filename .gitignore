@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+
+# Rust
+target/
+**/*.rs.bk
+
+# Maturin
+dist/
+
+# Logs and other artifacts
+*.log
+*.sqlite
+.DS_Store
+.env
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+.env

@@ -1,0 +1,15 @@
+[package]
+name = "turboterm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "turboterm"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.28.1", features = ["extension-module"] }
+ansiterm = "0.12"
+unicode-width = "0.1"
+lazy_static = "1.4"
+comfy-table = { version = "7.2.2", features = ["tty", "custom_styling"] }
