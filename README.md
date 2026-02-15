@@ -1,6 +1,6 @@
 <h1 align="center">TurboTerm</h1>
 <p align="center">
-    <em>High-performance terminal styling and CLI toolkit for Python, written in Rust</em>
+    <em>⚡ A high-performance terminal styling and CLI toolkit for Python, written in Rust 🦀</em>
 </p>
 
 ## Installation
@@ -9,14 +9,53 @@
 pip install turboterm
 ```
 
+## Features
+
+- **CLI framework** — decorator-based argument parsing powered by `clap`, with auto-generated help
+- **Styled output** — rich text formatting with nested tags, 256-color, truecolor, and hex support
+- **Tables** — Unicode tables with styled cell content via `comfy-table`
+- All the heavy lifting happens in Rust; Python just calls in
+
 ## Usage
+
+### CLI framework
+
+Build CLIs with type-safe arguments, flags, and subcommands — all from Python decorators:
+
+```python
+from turboterm import console
+
+@console.command()
+def greet(name: str = console.argument(help="Name to greet"),
+          shout: bool = console.option(["--shout", "-s"], help="Shout the greeting")):
+    """Greet someone."""
+    msg = f"Hello, {name}!"
+    if shout:
+        msg = msg.upper()
+    console.print(f"[green]{msg}[/green]")
+
+console.run()
+```
+
+```
+$ python greet.py greet --help
+Usage: greet <NAME>
+
+Arguments:
+  NAME    Name to greet
+
+Options:
+  --shout, -s    Shout the greeting
+
+$ python greet.py greet Alice --shout
+HELLO, ALICE!
+```
 
 ### Styled output
 
 ```python
 from turboterm import console
 
-# Text attributes, colors, and compound tags
 console.print("[b]Bold[/b], [i]italic[/i], [u]underline[/u], [s]strike[/s]")
 console.print("[red]Red[/red] [green]Green[/green] [blue]Blue[/blue]")
 console.print("[bold red on_blue]Compound: bold + red + blue background[/bold red on_blue]")
@@ -41,25 +80,6 @@ console.table([
 ])
 ```
 
-### CLI framework
-
-```python
-from turboterm import console
-
-@console.command()
-def greet(name: str = console.argument(help="Name to greet"),
-          shout: bool = console.option(["--shout", "-s"], help="Shout the greeting")):
-    """Greet someone."""
-    msg = f"Hello, {name}!"
-    if shout:
-        msg = msg.upper()
-    console.print(f"[green]{msg}[/green]")
-
-console.run()
-```
-
-See the [`examples/`](examples/) folder for more complete examples.
-
 ### Direct API
 
 `apply_styles()` returns a plain string, compatible with standard `print()`, logging, and redirects:
@@ -70,6 +90,8 @@ import turboterm
 styled = turboterm.apply_styles("[bold green]Success[/bold green]")
 print(styled)
 ```
+
+See the [`examples/`](examples/) folder for more complete examples.
 
 ## Development
 
