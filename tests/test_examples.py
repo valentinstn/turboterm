@@ -13,7 +13,7 @@ import unittest
 def _run(script_path: str, args: list[str]) -> subprocess.CompletedProcess:
     """Run an example script in a subprocess and return the result."""
     return subprocess.run(
-        [sys.executable, "-X", "utf8", script_path] + args,
+        [sys.executable, "-X", "utf8", script_path, *args],
         capture_output=True,
         encoding="utf-8",
         errors="replace",
@@ -113,7 +113,7 @@ class TestServerCli(unittest.TestCase):
         self.assertNotIn("Verbose", r.stdout)
 
     def test_start_custom(self):
-        """uv run python examples/server_cli.py start --host 0.0.0.0 -p 3000 --verbose"""
+        """server_cli.py start --host 0.0.0.0 -p 3000 --verbose"""
         r = _run(self.SCRIPT, ["start", "--host", "0.0.0.0", "-p", "3000", "--verbose"])
         self.assertEqual(r.returncode, 0)
         self.assertIn("0.0.0.0:3000", r.stdout)
@@ -165,7 +165,7 @@ class TestDeployTool(unittest.TestCase):
         self.assertIn("Deployed", r.stdout)
 
     def test_push_dry_run(self):
-        """uv run python examples/deploy_tool.py push production --tag v1.2.3 --dry-run"""
+        """deploy_tool.py push production --tag v1.2.3 --dry-run"""
         r = _run(self.SCRIPT, ["push", "production", "--tag", "v1.2.3", "--dry-run"])
         self.assertEqual(r.returncode, 0)
         self.assertIn("DRY RUN", r.stdout)

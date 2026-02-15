@@ -1,6 +1,7 @@
+import io
 import unittest
 from unittest.mock import patch
-import io
+
 import turboterm
 from turboterm.console import Console  # Import Console class directly for type checking
 

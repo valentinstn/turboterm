@@ -10,7 +10,7 @@ Usage:
 """
 
 from turboterm import console
-from turboterm.cli import command, Option, run
+from turboterm.cli import Option, command, run
 
 
 @command()
@@ -23,9 +23,8 @@ def demo():
     console.print("[bold red]Bold red text[/bold red]")
     console.print("[dim]Dim text[/dim]")
     console.print("[s]Strikethrough text[/s]")
-    console.print(
-        "[italic bright_cyan on_blue]Italic bright cyan on blue[/italic bright_cyan on_blue]"
-    )
+    tag = "italic bright_cyan on_blue"
+    console.print(f"[{tag}]Italic bright cyan on blue[/{tag}]")
     console.print("[color(208)]256-color orange[/color(208)]")
     console.print("[#ff8000]Hex orange[/#ff8000]")
     console.print("[rgb(100,200,50)]RGB green[/rgb(100,200,50)]")

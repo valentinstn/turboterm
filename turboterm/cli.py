@@ -1,6 +1,9 @@
-from typing import Any, Callable, Optional
 import inspect
-from .turboterm import register_command as _register, run_cli as _run_cli
+from collections.abc import Callable
+from typing import Any
+
+from .turboterm import register_command as _register
+from .turboterm import run_cli as _run_cli
 
 _UNSET = object()
 
@@ -32,7 +35,7 @@ def Option(names: list[str], help: str = "", default: Any = _UNSET) -> Any:
     return _Option(names=names, help=help, default=default)
 
 
-def command(name: Optional[str] = None):
+def command(name: str | None = None):
     """Decorator to register a function as a CLI command."""
 
     def decorator(func: Callable):

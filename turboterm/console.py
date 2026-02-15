@@ -1,5 +1,5 @@
-from .turboterm import apply_styles, PyTable
 from .cli import Argument, Option, command, run
+from .turboterm import PyTable, apply_styles
 
 
 class Console:

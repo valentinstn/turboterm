@@ -10,7 +10,7 @@ Usage:
     uv run examples/calculator.py --help
 """
 
-from turboterm.cli import command, Argument, run
+from turboterm.cli import Argument, command, run
 
 
 @command()

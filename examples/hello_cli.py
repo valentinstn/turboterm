@@ -7,7 +7,7 @@ Usage:
     uv run examples/hello_cli.py greet --help
 """
 
-from turboterm.cli import command, Argument, run
+from turboterm.cli import Argument, command, run
 
 
 @command()

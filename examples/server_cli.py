@@ -10,7 +10,7 @@ Usage:
     uv run examples/server_cli.py status
 """
 
-from turboterm.cli import command, Option, run
+from turboterm.cli import Option, command, run
 
 
 @command()

@@ -5,7 +5,6 @@ import unittest
 # and persists across calls, we import and register commands per-test using subprocess
 # isolation. For unit tests, we test the Python-side components directly and use
 # subprocess for integration tests.
-
 from turboterm.cli import Argument, Option, _Argument, _Option, command
 
 
@@ -316,7 +315,7 @@ run()
         self.assertEqual(stdout.strip(), "hello")
 
     def test_missing_required_arg_error(self):
-        _, stderr, rc = self._run_cli_script("""
+        _, _stderr, rc = self._run_cli_script("""
 import sys
 from turboterm.cli import command, Argument, run
 
@@ -330,7 +329,7 @@ run()
         self.assertNotEqual(rc, 0)
 
     def test_invalid_type_error(self):
-        _, stderr, rc = self._run_cli_script("""
+        _, _stderr, rc = self._run_cli_script("""
 import sys
 from turboterm.cli import command, Argument, run
 
@@ -344,7 +343,7 @@ run()
         self.assertNotEqual(rc, 0)
 
     def test_unknown_command_error(self):
-        _, stderr, rc = self._run_cli_script("""
+        _, _stderr, rc = self._run_cli_script("""
 import sys
 from turboterm.cli import command, run
 
@@ -392,7 +391,7 @@ run()
         self.assertIn("This is my cool tool", stdout)
 
     def test_bare_param_no_annotation(self):
-        """Parameters without Argument/Option default are treated as required positional."""
+        """Params without Argument/Option default are required positional."""
         stdout, _, rc = self._run_cli_script("""
 import sys
 from turboterm.cli import command, run
@@ -408,7 +407,7 @@ run()
         self.assertEqual(stdout.strip(), "hello")
 
     def test_plain_default_value(self):
-        """Parameter with a plain default (not Argument/Option) is optional positional."""
+        """Plain default (not Argument/Option) is optional positional."""
         stdout, _, rc = self._run_cli_script("""
 import sys
 from turboterm.cli import command, run

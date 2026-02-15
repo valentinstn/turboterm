@@ -12,7 +12,7 @@ Usage:
 """
 
 from turboterm import console
-from turboterm.cli import command, Argument, Option, run
+from turboterm.cli import Argument, Option, command, run
 
 
 @command()
