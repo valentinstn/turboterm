@@ -75,7 +75,7 @@ jobs:
             maturin-args: --release --out dist
           - os: macos-latest
             maturin-args: --release --out dist --target universal2-apple-darwin
-            rust-target: aarch64-apple-darwin
+            rust-target: x86_64-apple-darwin
           - os: windows-latest
             maturin-args: --release --out dist
     steps:
