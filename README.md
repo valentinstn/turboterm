@@ -24,17 +24,18 @@ Build CLIs with type-safe arguments, flags, and subcommands — all from Python 
 
 ```python
 from turboterm import console
+from turboterm.cli import command, Argument, Option, run
 
-@console.command()
-def greet(name: str = console.argument(help="Name to greet"),
-          shout: bool = console.option(["--shout", "-s"], help="Shout the greeting")):
+@command()
+def greet(name: str = Argument(help="Name to greet"),
+          shout: bool = Option(["--shout", "-s"], help="Shout the greeting")):
     """Greet someone."""
     msg = f"Hello, {name}!"
     if shout:
         msg = msg.upper()
     console.print(f"[green]{msg}[/green]")
 
-console.run()
+run()
 ```
 
 ```
