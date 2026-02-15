@@ -14,18 +14,23 @@ venv/
 # Rust
 target/
 **/*.rs.bk
+Cargo.lock
 
 # Maturin
 dist/
+*.so
+*.dylib
+*.dll
 
 # Logs and other artifacts
 *.log
 *.sqlite
-.DS_Store
-.env
 .idea/
 .vscode/
 
 # OS generated files
 .DS_Store
+
+# Environment / secrets
 .env
+.env.*

@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     -   Hex colors: `#RRGGBB` (foreground), `on_#RRGGBB` (background).
     -   Compound tags: `[bold red on_blue]` applies multiple styles in a single tag.
     -   Nested styles with proper reset/restore on close.
--   **Turbo-Tables** — styled terminal tables via `comfy-table`, with lexer integration for styled cell content.
+-   **Turbo-Tables** — styled terminal tables with custom UTF-8 renderer and lexer integration for styled cell content.
 -   **Console singleton** — pre-configured `console` object with `print()` and `table()` methods.
 -   **CLI framework** — decorator-based CLI argument parsing powered by Rust (`clap`).
     -   `@command()` decorator for registering subcommands.
@@ -37,7 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Python version support: `>=3.11`, with `3.14` for development.
 -   `pyo3` `0.28.1` for Python 3.14 compatibility.
--   `comfy-table` `7.2.2` with `tty` and `custom_styling` features.
+-   Replaced `comfy-table` with custom UTF-8 table renderer — removed ~20 transitive dependencies (crossterm, console, nom, vte, rustix, parking_lot, etc.).
+-   Added `unicode-width` for ANSI-aware column width calculation.
+-   Binary size reduced from 934 KB to 770 KB.
 
 ### Removed
 

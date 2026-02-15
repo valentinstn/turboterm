@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.28.1", features = ["extension-module"] }
 clap = { version = "4.0", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "string"] }
-comfy-table = { version = "7.2.2", default-features = false, features = ["custom_styling"] }
+unicode-width = "0.2"
 
 [profile.release]
 strip = true

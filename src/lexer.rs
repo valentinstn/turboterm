@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::sync::LazyLock;
+use unicode_width::UnicodeWidthChar;
 
 const ANSI_RESET: &str = "\x1b[0m";
 
@@ -236,4 +237,24 @@ pub fn apply_styles(text: &str) -> String {
     }
 
     result
+}
+
+/// Returns the visible (display) width of a string, ignoring ANSI escape sequences.
+pub fn visible_width(s: &str) -> usize {
+    let mut width = 0;
+    let mut chars = s.chars();
+    while let Some(c) = chars.next() {
+        if c == '\x1b' {
+            if chars.next() == Some('[') {
+                for c in chars.by_ref() {
+                    if c == 'm' {
+                        break;
+                    }
+                }
+            }
+        } else {
+            width += c.width().unwrap_or(0);
+        }
+    }
+    width
 }

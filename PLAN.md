@@ -1,96 +1,67 @@
-# PLAN.md: TurboTerm 🚀
+# TurboTerm — Vision & Architecture
 
-**Project Goal:** To become the "uv" of CLI UI. A high-performance, oxidized toolkit that provides beautiful terminal formatting with near-zero overhead.
+**Goal:** The "uv" of CLI UI. A high-performance, oxidized toolkit that provides beautiful terminal formatting with near-zero overhead.
 
----
+## Core Philosophy
 
-## 1. Core Philosophy
-* **Extreme Performance:** 10x–50x faster startup than pure-Python alternatives.
-* **Oxidized Core:** 100% of logic (parsing, layout, rendering) happens in Rust via PyO3.
-* **Zero-Dependency:** Statically linked; `pip install` should result in a single binary extension.
-* **Compatibility:** Python 3.11+ (for general compatibility), Python 3.14 (for development)
-* **SISO** (String-In, String-Out) architecture ensures it works with standard `print()`, logging, and redirects.
+- **Extreme Performance:** 10x-50x faster startup than pure-Python alternatives.
+- **Oxidized Core:** 100% of logic (parsing, layout, rendering) happens in Rust via PyO3.
+- **Zero-Dependency:** Statically linked; `pip install` results in a single binary extension.
+- **Compatibility:** Python 3.11+ (general), Python 3.14 (development).
+- **SISO** (String-In, String-Out) architecture — works with `print()`, logging, redirects.
 
----
+## Architecture
 
-## 2. Technical Architecture
-* **Language:** Rust (Engine) + Python (Shallow API).
-* **Bindings:** `PyO3` (leveraging `Bound` API for memory efficiency).
-* **Key Crates:**
-    * `comfy-table`: For optimized table layout.
-    * `ansiterm`: For hardware-compatible ANSI generation.
-    * `unicode-width`: For accurate cell sizing (Emoji/CJK support).
-* **Build System:** `Maturin` + `GitHub Actions`.
+- **Language:** Rust (engine) + Python (shallow API)
+- **Bindings:** PyO3 (Bound API)
+- **Key Crates:**
+  - `clap` — CLI argument parsing (no default features, minimal footprint)
+  - `unicode-width` — accurate cell sizing (CJK/emoji)
+  - `pyo3` — Python bindings
+- **Build System:** Maturin + GitHub Actions
 
+## Repository Structure
 
-
----
-
-## 3. Implementation Milestones
-
-### Milestone 1: The Lightning Lexer
-* **Task:** Implement a stack-based, single-pass character scanner in Rust.
-* **Input:** `[b red]Hello[/b red]` → **Output:** `\x1b[1m\x1b[31mHello\x1b[0m`.
-* **Constraint:** O(n) complexity. Avoid regex to minimize binary size and maximize speed.
-* **Nesting:** Support nested styles (e.g., `[b]bold [u]underlined[/u][/b]`).
-
-### Milestone 2: Turbo-Tables
-* **Task:** Efficiently bridge Python data structures to the `comfy-table` engine.
-* **Logic:** Rust calculates all column widths, alignment, and word wrapping.
-* **Feature:** Tables must support the "Lightning Lexer" for styled content within cells.
-
-### Milestone 3: The "uv" Experience (DX)
-* **Lazy Loading:** Keep `__init__.py` minimal to ensure `import turboterm` takes **< 5ms**.
-* **Global Console:** Provide a pre-configured `console` singleton for immediate use.
-* **Markdown:** Add a basic Markdown-to-ANSI renderer implemented entirely in Rust.
-
-### Milestone 4: Global Distribution
-
-*   **Automation:** GitHub Actions workflow using `maturin-action`.
-
-*   **Matrix:** Build wheels for Windows (x64), MacOS (Universal), and Linux (manylinux/musllinux).
-
-*   **Quality:** Generate `.pyi` type stubs automatically for 100% IDE type-safety.
-
-
-
-### Milestone 5: CLI Framework (Argparse Replacement)
-
-*   **Task:** Implement a Rust-powered, Python-friendly CLI argument parsing framework that replaces `argparse` with rich styling and interactive capabilities.
-
-*   **Pythonic API:** Decorator/Class-based argument definition similar to `Typer` or `Click`, leveraging Python type hints.
-
-*   **Rust Parsing Engine:** Core parsing logic in Rust for performance and robust validation (`clap` or `pico-args` integration).
-
-*   **Styled Help Output:** Automatically generate beautifully styled help messages (syntax highlighting, styled descriptions, tables) using TurboTerm's existing lexer and table rendering.
-
-*   **Interactive Prompts:** Provide styled prompts for missing arguments, confirmations, choices, and text input using `ansiterm` or similar.
-
-*   **`console` Integration:** Expose `console.command()`, `console.argument()`, `console.option()`, and `console.run()` for a seamless user experience.
-
-
-
----
-
-
-
-## 4. Performance Targets
-
-
-| Metric | Target | vs. Competitors |
-| :--- | :--- | :--- |
-| **Import Time** | < 5ms | ~20x faster than Rich |
-| **Table Render** | < 50ms (10k rows) | Significantly lower CPU/Memory usage |
-| **Dependency Count** | 0 | Cleaner `site-packages` |
-
----
-
-## 5. Repository Structure
-```text
+```
 turboterm/
-├── .github/workflows/   # maturin-action release logic
-├── src/                 # Rust source code (lib.rs, lexer.rs, table.rs)
+├── .github/workflows/   # CI + release workflows
+├── src/                 # Rust source
+│   ├── lib.rs           # PyO3 module entry point
+│   ├── lexer.rs         # Style parser + visible_width()
+│   ├── table.rs         # Custom UTF-8 table renderer
+│   └── cli.rs           # CLI framework (clap bridge)
 ├── turboterm/           # Python wrapper & .pyi stubs
-├── tests/               # Performance & correctness tests
+├── tests/               # 103 tests (unittest)
+├── examples/            # Example scripts
+├── benchmark.py         # Performance benchmarks
 ├── Cargo.toml           # Rust dependencies
-└── pyproject.toml       # Maturin build configuration
+└── pyproject.toml       # Maturin build config
+```
+
+## Milestones
+
+### Milestone 1: Lightning Lexer — DONE
+
+Stack-based, single-pass ANSI style parser in Rust. Supports text attributes, 16/256/truecolor, hex, compound tags, and nested styles with correct reset/restore.
+
+### Milestone 2: Turbo-Tables — DONE
+
+Custom UTF-8 table renderer (replaced `comfy-table` in Feb 2025). Zero external rendering dependencies. Box-drawing output with styled cell content via the lexer. 15x faster than Rich.
+
+### Milestone 3: DX — DONE
+
+- Lazy loading (`import turboterm` < 10ms)
+- Global `console` singleton with `print()` and `table()` methods
+- Markdown renderer: cancelled (complexity vs. value)
+
+### Milestone 4: Global Distribution — DONE
+
+GitHub Actions CI/CD: lint, test, cross-platform wheel builds, PyPI upload on release.
+
+### Milestone 5: CLI Framework — DONE
+
+Decorator-based CLI parsing powered by Rust's `clap`. Subcommands, arguments, options, auto-help.
+
+---
+
+See [TODO.md](TODO.md) for concrete next steps.
