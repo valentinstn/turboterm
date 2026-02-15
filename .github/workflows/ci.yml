@@ -74,7 +74,8 @@ jobs:
           - os: ubuntu-latest
             maturin-args: --release --out dist
           - os: macos-latest
-            maturin-args: --release --out dist --universal2
+            maturin-args: --release --out dist --target universal2-apple-darwin
+            rust-target: aarch64-apple-darwin
           - os: windows-latest
             maturin-args: --release --out dist
     steps:
@@ -82,6 +83,8 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-target || '' }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
