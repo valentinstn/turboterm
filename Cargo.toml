@@ -9,8 +9,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.28.1", features = ["extension-module"] }
-ansiterm = "0.12"
-unicode-width = "0.1"
-lazy_static = "1.4"
-clap = { version = "4.0", features = ["derive", "env", "string"] }
-comfy-table = { version = "7.2.2", features = ["tty", "custom_styling"] }
+clap = { version = "4.0", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "string"] }
+comfy-table = { version = "7.2.2", default-features = false, features = ["custom_styling"] }
+
+[profile.release]
+strip = true
+lto = true

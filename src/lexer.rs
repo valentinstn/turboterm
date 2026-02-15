@@ -1,76 +1,74 @@
-use lazy_static::lazy_static;
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 const ANSI_RESET: &str = "\x1b[0m";
 
-lazy_static! {
-    static ref STYLES: HashMap<&'static str, &'static str> = {
-        let mut m = HashMap::new();
+static STYLES: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| {
+    let mut m = HashMap::new();
 
-        // Text attributes
-        m.insert("b", "\x1b[1m");
-        m.insert("bold", "\x1b[1m");
-        m.insert("dim", "\x1b[2m");
-        m.insert("i", "\x1b[3m");
-        m.insert("italic", "\x1b[3m");
-        m.insert("u", "\x1b[4m");
-        m.insert("underline", "\x1b[4m");
-        m.insert("blink", "\x1b[5m");
-        m.insert("inverse", "\x1b[7m");
-        m.insert("reverse", "\x1b[7m");
-        m.insert("hidden", "\x1b[8m");
-        m.insert("s", "\x1b[9m");
-        m.insert("strike", "\x1b[9m");
-        m.insert("strikethrough", "\x1b[9m");
-        m.insert("overline", "\x1b[53m");
+    // Text attributes
+    m.insert("b", "\x1b[1m");
+    m.insert("bold", "\x1b[1m");
+    m.insert("dim", "\x1b[2m");
+    m.insert("i", "\x1b[3m");
+    m.insert("italic", "\x1b[3m");
+    m.insert("u", "\x1b[4m");
+    m.insert("underline", "\x1b[4m");
+    m.insert("blink", "\x1b[5m");
+    m.insert("inverse", "\x1b[7m");
+    m.insert("reverse", "\x1b[7m");
+    m.insert("hidden", "\x1b[8m");
+    m.insert("s", "\x1b[9m");
+    m.insert("strike", "\x1b[9m");
+    m.insert("strikethrough", "\x1b[9m");
+    m.insert("overline", "\x1b[53m");
 
-        // Standard foreground colors
-        m.insert("black", "\x1b[30m");
-        m.insert("red", "\x1b[31m");
-        m.insert("green", "\x1b[32m");
-        m.insert("yellow", "\x1b[33m");
-        m.insert("blue", "\x1b[34m");
-        m.insert("magenta", "\x1b[35m");
-        m.insert("cyan", "\x1b[36m");
-        m.insert("white", "\x1b[37m");
+    // Standard foreground colors
+    m.insert("black", "\x1b[30m");
+    m.insert("red", "\x1b[31m");
+    m.insert("green", "\x1b[32m");
+    m.insert("yellow", "\x1b[33m");
+    m.insert("blue", "\x1b[34m");
+    m.insert("magenta", "\x1b[35m");
+    m.insert("cyan", "\x1b[36m");
+    m.insert("white", "\x1b[37m");
 
-        // Bright foreground colors
-        m.insert("bright_black", "\x1b[90m");
-        m.insert("grey", "\x1b[90m");
-        m.insert("gray", "\x1b[90m");
-        m.insert("bright_red", "\x1b[91m");
-        m.insert("bright_green", "\x1b[92m");
-        m.insert("bright_yellow", "\x1b[93m");
-        m.insert("bright_blue", "\x1b[94m");
-        m.insert("bright_magenta", "\x1b[95m");
-        m.insert("bright_cyan", "\x1b[96m");
-        m.insert("bright_white", "\x1b[97m");
+    // Bright foreground colors
+    m.insert("bright_black", "\x1b[90m");
+    m.insert("grey", "\x1b[90m");
+    m.insert("gray", "\x1b[90m");
+    m.insert("bright_red", "\x1b[91m");
+    m.insert("bright_green", "\x1b[92m");
+    m.insert("bright_yellow", "\x1b[93m");
+    m.insert("bright_blue", "\x1b[94m");
+    m.insert("bright_magenta", "\x1b[95m");
+    m.insert("bright_cyan", "\x1b[96m");
+    m.insert("bright_white", "\x1b[97m");
 
-        // Standard background colors
-        m.insert("on_black", "\x1b[40m");
-        m.insert("on_red", "\x1b[41m");
-        m.insert("on_green", "\x1b[42m");
-        m.insert("on_yellow", "\x1b[43m");
-        m.insert("on_blue", "\x1b[44m");
-        m.insert("on_magenta", "\x1b[45m");
-        m.insert("on_cyan", "\x1b[46m");
-        m.insert("on_white", "\x1b[47m");
+    // Standard background colors
+    m.insert("on_black", "\x1b[40m");
+    m.insert("on_red", "\x1b[41m");
+    m.insert("on_green", "\x1b[42m");
+    m.insert("on_yellow", "\x1b[43m");
+    m.insert("on_blue", "\x1b[44m");
+    m.insert("on_magenta", "\x1b[45m");
+    m.insert("on_cyan", "\x1b[46m");
+    m.insert("on_white", "\x1b[47m");
 
-        // Bright background colors
-        m.insert("on_bright_black", "\x1b[100m");
-        m.insert("on_grey", "\x1b[100m");
-        m.insert("on_gray", "\x1b[100m");
-        m.insert("on_bright_red", "\x1b[101m");
-        m.insert("on_bright_green", "\x1b[102m");
-        m.insert("on_bright_yellow", "\x1b[103m");
-        m.insert("on_bright_blue", "\x1b[104m");
-        m.insert("on_bright_magenta", "\x1b[105m");
-        m.insert("on_bright_cyan", "\x1b[106m");
-        m.insert("on_bright_white", "\x1b[107m");
+    // Bright background colors
+    m.insert("on_bright_black", "\x1b[100m");
+    m.insert("on_grey", "\x1b[100m");
+    m.insert("on_gray", "\x1b[100m");
+    m.insert("on_bright_red", "\x1b[101m");
+    m.insert("on_bright_green", "\x1b[102m");
+    m.insert("on_bright_yellow", "\x1b[103m");
+    m.insert("on_bright_blue", "\x1b[104m");
+    m.insert("on_bright_magenta", "\x1b[105m");
+    m.insert("on_bright_cyan", "\x1b[106m");
+    m.insert("on_bright_white", "\x1b[107m");
 
-        m
-    };
-}
+    m
+});
 
 /// Resolve a single style token to its ANSI escape sequence.
 /// Handles both static names (from the STYLES table) and dynamic parameterized

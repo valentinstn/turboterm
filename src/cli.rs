@@ -30,10 +30,8 @@ struct PyCliCommand {
     params: Vec<CliParam>,
 }
 
-lazy_static::lazy_static! {
-    static ref CLI_COMMAND_REGISTRY: std::sync::Mutex<HashMap<String, PyCliCommand>> =
-        std::sync::Mutex::new(HashMap::new());
-}
+static CLI_COMMAND_REGISTRY: std::sync::LazyLock<std::sync::Mutex<HashMap<String, PyCliCommand>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(HashMap::new()));
 
 /// Register a command with pre-processed parameter metadata.
 /// Called from the Python `@command()` decorator which handles signature inspection.
