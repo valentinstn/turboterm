@@ -1,8 +1,8 @@
-use pyo3::prelude::*;
+use clap::{Arg, ArgAction, Command};
 use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use std::collections::HashMap;
-use clap::{Command, Arg, ArgAction};
 
 // --- Internal CLI parameter representation ---
 
@@ -49,28 +49,33 @@ pub fn register_command(
     let mut cli_params = Vec::new();
 
     for param_dict in params {
-        let param_name: String = param_dict.get_item("name")?
+        let param_name: String = param_dict
+            .get_item("name")?
             .ok_or_else(|| PyValueError::new_err("param missing 'name'"))?
             .extract()?;
-        let kind_str: String = param_dict.get_item("kind")?
+        let kind_str: String = param_dict
+            .get_item("kind")?
             .ok_or_else(|| PyValueError::new_err("param missing 'kind'"))?
             .extract()?;
-        let help: String = param_dict.get_item("help")?
+        let help: String = param_dict
+            .get_item("help")?
             .map(|v| v.extract().unwrap_or_default())
             .unwrap_or_default();
-        let required: bool = param_dict.get_item("required")?
+        let required: bool = param_dict
+            .get_item("required")?
             .map(|v| v.extract().unwrap_or(true))
             .unwrap_or(true);
 
-        let type_ann = param_dict.get_item("type")?
+        let type_ann = param_dict
+            .get_item("type")?
             .filter(|v| !v.is_none())
             .map(|v| v.unbind());
 
-        let default_val = param_dict.get_item("default")?
-            .map(|v| v.unbind());
+        let default_val = param_dict.get_item("default")?.map(|v| v.unbind());
 
         let kind = if kind_str == "option" {
-            let flags: Vec<String> = param_dict.get_item("flags")?
+            let flags: Vec<String> = param_dict
+                .get_item("flags")?
                 .ok_or_else(|| PyValueError::new_err("option param missing 'flags'"))?
                 .extract()?;
             ParamKind::Option { flag_names: flags }
@@ -79,7 +84,8 @@ pub fn register_command(
         };
 
         let is_bool = if kind_str == "option" {
-            param_dict.get_item("is_bool")?
+            param_dict
+                .get_item("is_bool")?
                 .map(|v| v.extract().unwrap_or(false))
                 .unwrap_or(false)
         } else {
@@ -110,7 +116,11 @@ pub fn register_command(
 }
 
 /// Convert a string CLI value to a Python object using the type annotation as constructor.
-fn convert_value(py: Python, val: &str, type_annotation: &Option<Py<PyAny>>) -> PyResult<Py<PyAny>> {
+fn convert_value(
+    py: Python,
+    val: &str,
+    type_annotation: &Option<Py<PyAny>>,
+) -> PyResult<Py<PyAny>> {
     if let Some(ty) = type_annotation {
         // Call the Python type: int("42"), float("3.14"), str("hello"), etc.
         ty.call1(py, (val,))
@@ -149,8 +159,7 @@ fn build_clap_app(commands: &[ClapCommandInfo]) -> Command {
         for param in &cmd.params {
             match &param.kind {
                 ParamKind::Positional => {
-                    let mut arg = Arg::new(param.name.clone())
-                        .required(param.required);
+                    let mut arg = Arg::new(param.name.clone()).required(param.required);
                     if !param.help.is_empty() {
                         arg = arg.help(param.help.clone());
                     }
@@ -162,8 +171,8 @@ fn build_clap_app(commands: &[ClapCommandInfo]) -> Command {
                         arg = arg.help(param.help.clone());
                     }
                     for flag in flag_names {
-                        if flag.starts_with("--") {
-                            arg = arg.long(flag[2..].to_string());
+                        if let Some(long_name) = flag.strip_prefix("--") {
+                            arg = arg.long(long_name.to_string());
                         } else if flag.starts_with('-') && flag.len() == 2 {
                             arg = arg.short(flag.chars().nth(1).unwrap());
                         }
@@ -189,19 +198,24 @@ pub fn run_cli(py: Python, args: Vec<String>) -> PyResult<()> {
     // Phase 1: Snapshot clap-relevant data from registry (owned strings only)
     let clap_commands: Vec<ClapCommandInfo> = {
         let registry = CLI_COMMAND_REGISTRY.lock().unwrap();
-        registry.iter().map(|(name, cmd)| {
-            ClapCommandInfo {
+        registry
+            .iter()
+            .map(|(name, cmd)| ClapCommandInfo {
                 name: name.clone(),
                 doc: cmd.doc.clone(),
-                params: cmd.params.iter().map(|p| ClapParamInfo {
-                    name: p.name.clone(),
-                    kind: p.kind.clone(),
-                    help: p.help.clone(),
-                    is_bool_flag: p.is_bool_flag,
-                    required: p.required,
-                }).collect(),
-            }
-        }).collect()
+                params: cmd
+                    .params
+                    .iter()
+                    .map(|p| ClapParamInfo {
+                        name: p.name.clone(),
+                        kind: p.kind.clone(),
+                        help: p.help.clone(),
+                        is_bool_flag: p.is_bool_flag,
+                        required: p.required,
+                    })
+                    .collect(),
+            })
+            .collect()
     }; // registry lock dropped here
 
     // Phase 2: Build clap command from owned data and parse
@@ -213,24 +227,23 @@ pub fn run_cli(py: Python, args: Vec<String>) -> PyResult<()> {
 
     let matches = match app.try_get_matches_from(full_args) {
         Ok(m) => m,
-        Err(e) => {
-            match e.kind() {
-                clap::error::ErrorKind::DisplayHelp
-                | clap::error::ErrorKind::DisplayVersion => {
-                    print!("{}", e);
-                    return Ok(());
-                }
-                _ => return Err(PyValueError::new_err(e.to_string())),
+        Err(e) => match e.kind() {
+            clap::error::ErrorKind::DisplayHelp | clap::error::ErrorKind::DisplayVersion => {
+                print!("{}", e);
+                return Ok(());
             }
-        }
+            _ => return Err(PyValueError::new_err(e.to_string())),
+        },
     };
 
-    let (subcmd_name, subcmd_matches) = matches.subcommand()
+    let (subcmd_name, subcmd_matches) = matches
+        .subcommand()
         .ok_or_else(|| PyValueError::new_err("No subcommand provided"))?;
 
     // Phase 3: Re-lock registry for dispatch
     let registry = CLI_COMMAND_REGISTRY.lock().unwrap();
-    let cmd = registry.get(subcmd_name)
+    let cmd = registry
+        .get(subcmd_name)
         .ok_or_else(|| PyValueError::new_err(format!("Unknown command: {}", subcmd_name)))?;
 
     // Build kwargs from parsed arguments

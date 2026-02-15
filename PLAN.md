@@ -30,7 +30,7 @@
 
 ### Milestone 1: The Lightning Lexer
 * **Task:** Implement a stack-based, single-pass character scanner in Rust.
-* **Input:** `[b red]Hello[/b]` → **Output:** `\x1b[1;31mHello\x1b[0m`.
+* **Input:** `[b red]Hello[/b red]` → **Output:** `\x1b[1m\x1b[31mHello\x1b[0m`.
 * **Constraint:** O(n) complexity. Avoid regex to minimize binary size and maximize speed.
 * **Nesting:** Support nested styles (e.g., `[b]bold [u]underlined[/u][/b]`).
 

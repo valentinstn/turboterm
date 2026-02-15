@@ -3,9 +3,10 @@
 Minimal CLI example — a single command with one positional argument.
 
 Usage:
-    uv run python examples/hello_cli.py greet Alice
-    uv run python examples/hello_cli.py greet --help
+    uv run examples/hello_cli.py greet Alice
+    uv run examples/hello_cli.py greet --help
 """
+
 from turboterm.cli import command, Argument, run
 
 

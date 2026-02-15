@@ -1,77 +1,96 @@
-# TurboTerm 🚀
+<h1 align="center">TurboTerm</h1>
+<p align="center">
+    <em>High-performance terminal styling and CLI toolkit for Python, written in Rust</em>
+</p>
 
-**The "uv" of CLI UI: A High-Performance, Oxidized Toolkit for Beautiful Terminal Formatting**
+## Installation
 
-TurboTerm aims to revolutionize command-line interface (CLI) aesthetics and performance. Built with a Rust core and a shallow Python API, it delivers stunning terminal output with near-zero overhead, making it significantly faster than pure-Python alternatives.
-
-## ✨ Features
-
-*   **Lightning Lexer:** A stack-based, single-pass character scanner in Rust for incredibly fast styled text processing (e.g., `[b red]Hello[/b]` → `\x1b[1;31mHello\x1b[0m`). Supports nested styles.
-*   **Turbo-Tables:** Efficiently renders complex tables with `comfy-table`, supporting styled content within cells.
-*   **Pre-configured Console:** A global `console` singleton for immediate, easy-to-use access to all formatting features.
-*   **Extreme Performance:** Designed for < 5ms import times and significantly faster table rendering.
-*   **Oxidized Core:** All heavy lifting (parsing, layout, rendering) is done in Rust via PyO3.
-*   **Zero-Dependency:** Statically linked for a clean `pip install` experience.
-*   **Compatibility:** SISO (String-In, String-Out) architecture ensures compatibility with standard `print()`, logging, and redirects.
-
-## 🚀 Installation
-
-```bash
-uv pip install turboterm
+```
+pip install turboterm
 ```
 
-## 💡 Usage
+## Usage
+
+### Styled output
 
 ```python
 from turboterm import console
 
-# Print styled text
-console.print("[b red]This is bold red text![/b red]")
+# Text attributes, colors, and compound tags
+console.print("[b]Bold[/b], [i]italic[/i], [u]underline[/u], [s]strike[/s]")
+console.print("[red]Red[/red] [green]Green[/green] [blue]Blue[/blue]")
+console.print("[bold red on_blue]Compound: bold + red + blue background[/bold red on_blue]")
 
-# Print a styled table
-data = [
-    ["[b]Header 1[/b]", "[red]Header 2[/red]"],
-    ["Row 1 Col 1", "Row 1 Col 2"],
-    ["[u]Row 2 Col 1[/u]", "Row 2 Col 2"]
-]
-console.table(data)
+# 256-color, truecolor, and hex
+console.print("[color(208)]256-color[/color(208)] [rgb(255,128,0)]RGB[/rgb(255,128,0)] [#ff8000]Hex[/#ff8000]")
+
+# Nested styles restore correctly
+console.print("[b]Bold then [red]bold-red[/red] then bold again[/b]")
 ```
 
-## 🧑‍💻 Development
+### Tables
 
-### Setup
+```python
+from turboterm import console
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/turboterm.git
-    cd turboterm
-    ```
-2.  Set up a Python virtual environment with `uv`:
-    ```bash
-    uv venv
-    uv add maturin mypy pytest
-    ```
-3.  Build the Rust extension in editable mode:
-    ```bash
-    uv run maturin develop
-    ```
+console.table([
+    ["[b]Name[/b]", "[b]Status[/b]"],
+    ["Alice", "[green]Active[/green]"],
+    ["Bob", "[red]Inactive[/red]"],
+    ["[dim]Charlie[/dim]", "[yellow]Pending[/yellow]"],
+])
+```
 
-### Running Tests
+### CLI framework
+
+```python
+from turboterm import console
+
+@console.command()
+def greet(name: str = console.argument(help="Name to greet"),
+          shout: bool = console.option(["--shout", "-s"], help="Shout the greeting")):
+    """Greet someone."""
+    msg = f"Hello, {name}!"
+    if shout:
+        msg = msg.upper()
+    console.print(f"[green]{msg}[/green]")
+
+console.run()
+```
+
+See the [`examples/`](examples/) folder for more complete examples.
+
+### Direct API
+
+`apply_styles()` returns a plain string, compatible with standard `print()`, logging, and redirects:
+
+```python
+import turboterm
+
+styled = turboterm.apply_styles("[bold green]Success[/bold green]")
+print(styled)
+```
+
+## Development
+
+```bash
+git clone https://github.com/valentinstn/turboterm.git
+cd turboterm
+uv run maturin develop
+```
+
+### Running tests
 
 ```bash
 uv run python -m unittest discover tests
 ```
 
-### Building Wheels
+### Building wheels
 
 ```bash
 uv run maturin build --release --out dist
 ```
 
-## 🤝 Contributing
+## License
 
-We welcome contributions! Please see `CONTRIBUTE.md` for guidelines.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+MIT License

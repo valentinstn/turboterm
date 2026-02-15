@@ -1,8 +1,8 @@
 import unittest
 import turboterm
 
-class TestTable(unittest.TestCase):
 
+class TestTable(unittest.TestCase):
     def test_basic_table(self):
         table = turboterm.PyTable()
         table.add_row(["Header 1", "Header 2"])
@@ -58,5 +58,6 @@ class TestTable(unittest.TestCase):
 └───┴────────┘"""
         self.assertEqual(table.to_string().strip(), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

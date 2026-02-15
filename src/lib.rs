@@ -1,10 +1,10 @@
 use pyo3::prelude::*;
-use pyo3::Bound;
 use pyo3::types::PyModule;
+use pyo3::Bound;
 
+mod cli;
 mod lexer;
-mod table;
-mod cli; // Add this line
+mod table; // Add this line
 
 #[pyfunction]
 fn apply_styles(text: &str) -> PyResult<String> {

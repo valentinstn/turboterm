@@ -1,6 +1,7 @@
 from .turboterm import apply_styles, PyTable
 from .cli import Argument, Option, command, run
 
+
 class Console:
     def print(self, text: str):
         """Prints styled text to the console."""
@@ -12,12 +13,13 @@ class Console:
         for row_data in data:
             table_instance.add_row(row_data)
         print(table_instance.to_string())
-    
+
     # Expose cli argument parsing functionality
     argument = Argument
     option = Option
     command = command
     run = run
+
 
 # Pre-configured console singleton
 console = Console()

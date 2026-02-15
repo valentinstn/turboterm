@@ -20,3 +20,8 @@ dependencies = [
 
 [tool.maturin]
 stubgen = true
+
+[dependency-groups]
+dev = [
+    "maturin>=1.0,<2.0",
+]

@@ -1,14 +1,12 @@
-import unittest
 import sys
-from unittest.mock import patch
-import io
+import unittest
 
 # We need a fresh command registry for each test. Since the Rust registry is global
 # and persists across calls, we import and register commands per-test using subprocess
 # isolation. For unit tests, we test the Python-side components directly and use
 # subprocess for integration tests.
 
-from turboterm.cli import Argument, Option, _Argument, _Option, command, _register, _run_cli
+from turboterm.cli import Argument, Option, _Argument, _Option, command
 
 
 class TestArgumentOption(unittest.TestCase):
@@ -22,6 +20,7 @@ class TestArgumentOption(unittest.TestCase):
         arg = Argument(help="A number")
         self.assertEqual(arg.help, "A number")
         from turboterm.cli import _UNSET
+
         self.assertIs(arg.default, _UNSET)
 
     def test_argument_with_default(self):
@@ -49,6 +48,7 @@ class TestArgumentOption(unittest.TestCase):
     def test_option_bool_no_default(self):
         opt = Option(["--verbose", "-v"], help="Verbose")
         from turboterm.cli import _UNSET
+
         self.assertIs(opt.default, _UNSET)
 
 
@@ -59,20 +59,24 @@ class TestCommandDecorator(unittest.TestCase):
         @command("test_preserved")
         def my_func():
             pass
+
         # Decorator should return the original function
         self.assertEqual(my_func.__name__, "my_func")
         self.assertTrue(callable(my_func))
 
     def test_decorator_auto_name(self):
         """Command name defaults to function name."""
+
         @command()
         def hello_world():
             pass
+
         # The function is registered under "hello_world"
         # We can't easily inspect the Rust registry, but we can verify no error
 
     def test_decorator_custom_name(self):
         """Command name can be overridden."""
+
         @command("my-custom-cmd")
         def something():
             pass
@@ -84,9 +88,12 @@ class TestCliIntegration(unittest.TestCase):
     def _run_cli_script(self, script):
         """Run a CLI script in a subprocess and return (stdout, stderr, returncode)."""
         import subprocess
+
         result = subprocess.run(
             [sys.executable, "-c", script],
-            capture_output=True, text=True, timeout=10,
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         return result.stdout, result.stderr, result.returncode
 

@@ -4,12 +4,13 @@ Options and flags example — a mock server CLI with --host, --port, and --verbo
 Demonstrates long/short flags, typed options with defaults, and bool flags.
 
 Usage:
-    uv run python examples/server_cli.py start
-    uv run python examples/server_cli.py start --host 0.0.0.0 -p 3000 --verbose
-    uv run python examples/server_cli.py start --help
-    uv run python examples/server_cli.py status
+    uv run examples/server_cli.py start
+    uv run examples/server_cli.py start --host 0.0.0.0 -p 3000 --verbose
+    uv run examples/server_cli.py start --help
+    uv run examples/server_cli.py status
 """
-from turboterm.cli import command, Argument, Option, run
+
+from turboterm.cli import command, Option, run
 
 
 @command()
