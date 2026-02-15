@@ -1,4 +1,3 @@
-from .cli import Argument, Option, command, run
 from .turboterm import PyTable, apply_styles
 
 
@@ -14,11 +13,25 @@ class Console:
             table_instance.add_row(row_data)
         print(table_instance.to_string())
 
-    # Expose cli argument parsing functionality
-    argument = Argument
-    option = Option
-    command = command
-    run = run
+    @property
+    def argument(self):
+        from .cli import Argument
+        return Argument
+
+    @property
+    def option(self):
+        from .cli import Option
+        return Option
+
+    @property
+    def command(self):
+        from .cli import command
+        return command
+
+    @property
+    def run(self):
+        from .cli import run
+        return run
 
 
 # Pre-configured console singleton

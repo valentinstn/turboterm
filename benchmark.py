@@ -15,6 +15,26 @@ import sys
 import time
 
 
+def _fresh_script_time(script: str, runs: int = 7) -> float:
+    """Measure script execution time in a fresh subprocess (median of N runs)."""
+    wrapped = (
+        "import time as _t, sys as _s\n"
+        "_start = _t.perf_counter()\n"
+        + script + "\n"
+        "print(_t.perf_counter() - _start, file=_s.stderr)"
+    )
+    times = []
+    for _ in range(runs):
+        r = subprocess.run(
+            [sys.executable, "-c", wrapped],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        times.append(float(r.stderr.strip()))
+    return statistics.median(times)
+
+
 def _fresh_import_time(module: str, runs: int = 7) -> float:
     """Measure import time in a fresh subprocess (median of N runs)."""
     times = []
@@ -204,9 +224,64 @@ def bench_tables():
     print()
 
 
+def bench_end_to_end():
+    """Benchmark a realistic small script end-to-end."""
+    print("=" * 60)
+    print("END-TO-END SCRIPT (import + style + table, median of 7 runs)")
+    print("=" * 60)
+
+    scripts = {
+        "turboterm": (
+            "import turboterm, io\n"
+            "buf = io.StringIO()\n"
+            "buf.write(turboterm.apply_styles('[bold red]Error:[/bold red] File not found'))\n"
+            "buf.write(turboterm.apply_styles('[green]Success:[/green] 3 tests passed'))\n"
+            "t = turboterm.PyTable()\n"
+            "t.add_row(['Test', 'Status', 'Duration'])\n"
+            "t.add_row(['test_login', 'PASS', '0.3s'])\n"
+            "t.add_row(['test_signup', 'PASS', '0.8s'])\n"
+            "t.add_row(['test_checkout', 'FAIL', '1.2s'])\n"
+            "buf.write(t.to_string())\n"
+            "buf.getvalue()\n"
+        ),
+        "rich": (
+            "from rich.console import Console\n"
+            "from rich.table import Table\n"
+            "import io\n"
+            "buf = io.StringIO()\n"
+            "c = Console(file=buf, width=120)\n"
+            "c.print('[bold red]Error:[/bold red] File not found')\n"
+            "c.print('[green]Success:[/green] 3 tests passed')\n"
+            "t = Table()\n"
+            "t.add_column('Test')\n"
+            "t.add_column('Status')\n"
+            "t.add_column('Duration')\n"
+            "t.add_row('test_login', 'PASS', '0.3s')\n"
+            "t.add_row('test_signup', 'PASS', '0.8s')\n"
+            "t.add_row('test_checkout', 'FAIL', '1.2s')\n"
+            "c.print(t)\n"
+            "buf.getvalue()\n"
+        ),
+    }
+
+    results = {}
+    for name, script in scripts.items():
+        try:
+            t = _fresh_script_time(script)
+            results[name] = t
+            print(f"  {name:<12s}  {t * 1000:8.2f} ms")
+        except Exception as e:
+            print(f"  {name:<12s}  SKIPPED ({e})")
+
+    if "turboterm" in results and "rich" in results:
+        print(f"\n  turboterm is {results['rich'] / results['turboterm']:.1f}x faster")
+    print()
+
+
 if __name__ == "__main__":
     print()
     bench_import_time()
+    bench_end_to_end()
     bench_styling()
     bench_memory()
     bench_tables()
