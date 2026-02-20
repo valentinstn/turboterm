@@ -8,6 +8,10 @@
 Python's CLI ecosystem is split: one library for colors, another for argument parsing, another for tables.
 TurboTerm combines all three in a single package backed by Rust — so your CLI renders faster and you don't need to juggle dependencies.
 
+<p align="center">
+  <img src="assets/benchmark.svg" alt="Import time comparison" width="660">
+</p>
+
 | Benchmark | turboterm | rich |
 |---|---:|---:|
 | End-to-end script | **0.8 ms** | 29 ms |
@@ -16,7 +20,7 @@ TurboTerm combines all three in a single package backed by Rust — so your CLI 
 | Import time | **0.7 ms** | 2.7 ms |
 
 > **36x faster** end-to-end scripts, **8x faster** styling, **99x faster** tables than rich — in a single package that also handles CLI parsing.
-> Reproduce with `uv run benchmark.py`.
+> Reproduce with `uv run scripts/benchmark.py` (also regenerates the chart above).
 
 ## Installation
 
@@ -134,7 +138,8 @@ uv run python -m unittest discover tests
 ### Running benchmarks
 
 ```bash
-uv run benchmark.py
+uv run scripts/benchmark.py        # import time + chart
+python scripts/benchmark.py        # full benchmark (requires built extension)
 ```
 
 ## License

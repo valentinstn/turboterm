@@ -1,18 +1,30 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "rich",
+#   "click",
+#   "typer",
+# ]
+# ///
 """
 Benchmark TurboTerm against Rich, Click, and Typer.
 
 Measures import time, styling throughput, memory usage, and table rendering.
-Requires: pip install rich click typer
+Saves an SVG chart to assets/benchmark.svg.
 
 Usage:
-    uv run benchmark.py
+    uv run scripts/benchmark.py
 """
 
+import platform
 import statistics
 import subprocess
 import sys
 import time
+from pathlib import Path
+
+ASSETS_DIR = Path(__file__).parent.parent / "assets"
 
 
 def _fresh_script_time(script: str, runs: int = 7) -> float:
@@ -80,14 +92,96 @@ def _memory_after_import(module: str | None, runs: int = 5) -> int:
     return statistics.median(values)
 
 
-def bench_import_time():
-    """Benchmark import times."""
+def _generate_import_chart(times: dict[str, float]) -> str:
+    """Generate a dark-themed SVG bar chart for import time comparison."""
+    W = 660
+    PAD_L = 24
+    LABEL_X = 118          # label right edge (text-anchor=end)
+    BAR_X = 126            # bar left edge
+    BAR_MAX_W = 352        # max bar pixel width
+    VAL_X = BAR_X + BAR_MAX_W + 10  # value text left edge
+    MULT_X = W - PAD_L    # multiplier right edge (text-anchor=end)
+    TITLE_H = 68
+    ROW_H = 42
+    BAR_H = 16
+    FONT = "ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace"
+
+    os_name = {"darwin": "macOS", "linux": "Linux", "win32": "Windows"}.get(
+        sys.platform, sys.platform
+    )
+    arch = platform.machine()
+    subtitle = f"median of 7 runs · {arch} {os_name}"
+
+    max_val = max(times.values())
+    tt_val = times.get("turboterm", 1.0)
+
+    total_rows = len(times)
+    height = TITLE_H + total_rows * ROW_H + 16
+
+    lines = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{height}">',
+        f'  <rect width="{W}" height="{height}" fill="#0d1117" rx="10"/>',
+        # Title (left) and subtitle (right)
+        f'  <text x="{PAD_L}" y="36" fill="#e6edf3"'
+        f' font-family="{FONT}" font-size="14" font-weight="600">Import Time</text>',
+        f'  <text x="{W - PAD_L}" y="36" fill="#6e7681"'
+        f' font-family="{FONT}" font-size="11" text-anchor="end">{subtitle}</text>',
+        # Separator
+        f'  <line x1="{PAD_L}" y1="64" x2="{W - PAD_L}" y2="64"'
+        f' stroke="#21262d" stroke-width="1"/>',
+    ]
+
+    for i, (name, val) in enumerate(times.items()):
+        y_center = TITLE_H + i * ROW_H + ROW_H // 2
+        bar_w = max(4, int(val / max_val * BAR_MAX_W))
+
+        is_tt = name == "turboterm"
+        bar_color = "#3fb950" if is_tt else "#484f58"
+        label_color = "#e6edf3" if is_tt else "#8b949e"
+        val_color = "#3fb950" if is_tt else "#8b949e"
+
+        # Label (right-aligned)
+        lines.append(
+            f'  <text x="{LABEL_X}" y="{y_center + 5}" fill="{label_color}"'
+            f' font-family="{FONT}" font-size="13" text-anchor="end">{name}</text>'
+        )
+        # Bar
+        lines.append(
+            f'  <rect x="{BAR_X}" y="{y_center - BAR_H // 2}"'
+            f' width="{bar_w}" height="{BAR_H}" fill="{bar_color}" rx="2"/>'
+        )
+        # Value
+        val_text = f"{val * 1000:.2f} ms"
+        lines.append(
+            f'  <text x="{VAL_X}" y="{y_center + 5}" fill="{val_color}"'
+            f' font-family="{FONT}" font-size="12">{val_text}</text>'
+        )
+        # Multiplier / badge
+        if is_tt:
+            lines.append(
+                f'  <text x="{MULT_X}" y="{y_center + 5}" fill="#3fb950"'
+                f' font-family="{FONT}" font-size="11" text-anchor="end">fastest</text>'
+            )
+        else:
+            mult = val / tt_val
+            lines.append(
+                f'  <text x="{MULT_X}" y="{y_center + 5}" fill="#6e7681"'
+                f' font-family="{FONT}" font-size="11"'
+                f' text-anchor="end">{mult:.1f}\u00d7 slower</text>'
+            )
+
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
+def bench_import_time() -> dict[str, float]:
+    """Benchmark import times. Returns {module: seconds}."""
     print("=" * 60)
     print("IMPORT TIME (median of 7 runs, fresh subprocess)")
     print("=" * 60)
 
     modules = ["turboterm", "rich", "click", "typer"]
-    results = {}
+    results: dict[str, float] = {}
     for mod in modules:
         try:
             t = _fresh_import_time(mod)
@@ -103,6 +197,7 @@ def bench_import_time():
             if mod != "turboterm":
                 print(f"  vs {mod}: {t / tt:.1f}x")
     print()
+    return results
 
 
 def bench_styling():
@@ -111,7 +206,12 @@ def bench_styling():
     print("STYLING THROUGHPUT")
     print("=" * 60)
 
-    import turboterm
+    try:
+        import turboterm
+    except ImportError:
+        print("  turboterm    SKIPPED (run via project venv: python scripts/benchmark.py)")
+        print()
+        return
 
     try:
         from rich.text import Text as RichText
@@ -173,7 +273,12 @@ def bench_tables():
     print("TABLE RENDERING (100 rows x 4 columns, 100 iterations)")
     print("=" * 60)
 
-    from turboterm import PyTable
+    try:
+        from turboterm import PyTable
+    except ImportError:
+        print("  turboterm    SKIPPED (run via project venv: python scripts/benchmark.py)")
+        print()
+        return
 
     try:
         from rich.table import Table as RichTable
@@ -280,7 +385,14 @@ def bench_end_to_end():
 
 if __name__ == "__main__":
     print()
-    bench_import_time()
+    import_times = bench_import_time()
+
+    if import_times:
+        ASSETS_DIR.mkdir(exist_ok=True)
+        chart_path = ASSETS_DIR / "benchmark.svg"
+        chart_path.write_text(_generate_import_chart(import_times))
+        print(f"Chart saved → {chart_path}\n")
+
     bench_end_to_end()
     bench_styling()
     bench_memory()

@@ -33,7 +33,8 @@ turboterm/
 ├── turboterm/           # Python wrapper & .pyi stubs
 ├── tests/               # 103 tests (unittest)
 ├── examples/            # Example scripts
-├── benchmark.py         # Performance benchmarks
+├── scripts/             # Dev scripts
+│   └── benchmark.py     # Performance benchmarks
 ├── Cargo.toml           # Rust dependencies
 └── pyproject.toml       # Maturin build config
 ```
