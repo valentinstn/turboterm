@@ -34,7 +34,9 @@ def deploy(
 ):
     """[bold]Deploy[/bold] the application to an environment."""
     if dry_run:
-        console.print(f"[yellow]DRY RUN:[/yellow] would deploy [cyan]{tag}[/cyan] → {env}")
+        console.print(
+            f"[yellow]DRY RUN:[/yellow] would deploy [cyan]{tag}[/cyan] → {env}"
+        )
     else:
         console.print(f"[green]Deployed[/green] [cyan]{tag}[/cyan] → {env}")
 
