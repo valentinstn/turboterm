@@ -31,8 +31,7 @@ def _fresh_script_time(script: str, runs: int = 7) -> float:
     """Measure script execution time in a fresh subprocess (median of N runs)."""
     wrapped = (
         "import time as _t, sys as _s\n"
-        "_start = _t.perf_counter()\n"
-        + script + "\n"
+        "_start = _t.perf_counter()\n" + script + "\n"
         "print(_t.perf_counter() - _start, file=_s.stderr)"
     )
     times = []
@@ -96,11 +95,11 @@ def _generate_import_chart(times: dict[str, float]) -> str:
     """Generate a dark-themed SVG bar chart for import time comparison."""
     W = 660
     PAD_L = 24
-    LABEL_X = 118          # label right edge (text-anchor=end)
-    BAR_X = 126            # bar left edge
-    BAR_MAX_W = 352        # max bar pixel width
+    LABEL_X = 118  # label right edge (text-anchor=end)
+    BAR_X = 126  # bar left edge
+    BAR_MAX_W = 352  # max bar pixel width
     VAL_X = BAR_X + BAR_MAX_W + 10  # value text left edge
-    MULT_X = W - PAD_L    # multiplier right edge (text-anchor=end)
+    MULT_X = W - PAD_L  # multiplier right edge (text-anchor=end)
     TITLE_H = 68
     ROW_H = 42
     BAR_H = 16
@@ -209,7 +208,7 @@ def bench_styling():
     try:
         import turboterm
     except ImportError:
-        print("  turboterm    SKIPPED (run via project venv: python scripts/benchmark.py)")
+        print("  turboterm    SKIPPED (build first: uv run maturin develop)")
         print()
         return
 
@@ -276,7 +275,7 @@ def bench_tables():
     try:
         from turboterm import PyTable
     except ImportError:
-        print("  turboterm    SKIPPED (run via project venv: python scripts/benchmark.py)")
+        print("  turboterm    SKIPPED (build first: uv run maturin develop)")
         print()
         return
 
@@ -337,17 +336,17 @@ def bench_end_to_end():
 
     scripts = {
         "turboterm": (
-            "import turboterm, io\n"
-            "buf = io.StringIO()\n"
-            "buf.write(turboterm.apply_styles('[bold red]Error:[/bold red] File not found'))\n"
-            "buf.write(turboterm.apply_styles('[green]Success:[/green] 3 tests passed'))\n"
-            "t = turboterm.PyTable()\n"
-            "t.add_row(['Test', 'Status', 'Duration'])\n"
-            "t.add_row(['test_login', 'PASS', '0.3s'])\n"
-            "t.add_row(['test_signup', 'PASS', '0.8s'])\n"
-            "t.add_row(['test_checkout', 'FAIL', '1.2s'])\n"
-            "buf.write(t.to_string())\n"
-            "buf.getvalue()\n"
+            "import turboterm as tt, io\n"
+            "b = io.StringIO()\n"
+            "b.write(tt.apply_styles('[bold red]Error:[/bold red] File not found'))\n"
+            "b.write(tt.apply_styles('[green]Success:[/green] 3 tests passed'))\n"
+            "tbl = tt.PyTable()\n"
+            "tbl.add_row(['Test', 'Status', 'Duration'])\n"
+            "tbl.add_row(['test_login', 'PASS', '0.3s'])\n"
+            "tbl.add_row(['test_signup', 'PASS', '0.8s'])\n"
+            "tbl.add_row(['test_checkout', 'FAIL', '1.2s'])\n"
+            "b.write(tbl.to_string())\n"
+            "b.getvalue()\n"
         ),
         "rich": (
             "from rich.console import Console\n"
