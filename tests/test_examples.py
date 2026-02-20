@@ -266,5 +266,56 @@ class TestStyledOutput(unittest.TestCase):
         self.assertIn("\x1b[31madmin\x1b[0m", output)
 
 
+# ---------------------------------------------------------------------------
+# examples/formatted_help.py
+# ---------------------------------------------------------------------------
+
+
+class TestFormattedHelp(unittest.TestCase):
+    """examples/formatted_help.py — styled markup in help text."""
+
+    SCRIPT = "examples/formatted_help.py"
+
+    def test_deploy_staging(self):
+        """deploy staging renders styled output."""
+        r = _run(self.SCRIPT, ["deploy", "staging", "--tag", "v2.1.0"])
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("v2.1.0", r.stdout)
+        self.assertIn("staging", r.stdout)
+
+    def test_deploy_dry_run(self):
+        """deploy with --dry-run prints DRY RUN notice."""
+        r = _run(self.SCRIPT, ["deploy", "production", "--dry-run"])
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("DRY RUN", r.stdout)
+        self.assertIn("production", r.stdout)
+
+    def test_rollback(self):
+        """rollback renders styled output."""
+        r = _run(self.SCRIPT, ["rollback", "staging", "--steps", "2"])
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("staging", r.stdout)
+        self.assertIn("2", r.stdout)
+
+    def test_deploy_help_contains_ansi(self):
+        """deploy --help output contains ANSI codes from markup in help= strings."""
+        r = _run(self.SCRIPT, ["deploy", "--help"])
+        self.assertEqual(r.returncode, 0)
+        # green for "staging", red for "production"
+        self.assertIn("\x1b[32m", r.stdout)
+        self.assertIn("\x1b[31m", r.stdout)
+        # bold from the docstring
+        self.assertIn("\x1b[1m", r.stdout)
+
+    def test_top_help_contains_ansi(self):
+        """Top-level --help shows styled subcommand descriptions."""
+        r = _run(self.SCRIPT, ["--help"])
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("deploy", r.stdout)
+        self.assertIn("rollback", r.stdout)
+        # bold from the docstrings
+        self.assertIn("\x1b[1m", r.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()

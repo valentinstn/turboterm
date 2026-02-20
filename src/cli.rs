@@ -151,7 +151,7 @@ fn build_clap_app(commands: &[ClapCommandInfo]) -> Command {
     for cmd in commands {
         let mut subcmd = Command::new(cmd.name.clone());
         if let Some(ref doc) = cmd.doc {
-            subcmd = subcmd.about(doc.clone());
+            subcmd = subcmd.about(crate::lexer::apply_styles(doc));
         }
 
         for param in &cmd.params {
@@ -159,14 +159,14 @@ fn build_clap_app(commands: &[ClapCommandInfo]) -> Command {
                 ParamKind::Positional => {
                     let mut arg = Arg::new(param.name.clone()).required(param.required);
                     if !param.help.is_empty() {
-                        arg = arg.help(param.help.clone());
+                        arg = arg.help(crate::lexer::apply_styles(&param.help));
                     }
                     subcmd = subcmd.arg(arg);
                 }
                 ParamKind::Option { flag_names } => {
                     let mut arg = Arg::new(param.name.clone());
                     if !param.help.is_empty() {
-                        arg = arg.help(param.help.clone());
+                        arg = arg.help(crate::lexer::apply_styles(&param.help));
                     }
                     for flag in flag_names {
                         if let Some(long_name) = flag.strip_prefix("--") {

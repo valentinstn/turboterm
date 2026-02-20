@@ -423,5 +423,115 @@ run()
         self.assertEqual(stdout.strip(), "Hello, World!")
 
 
+class TestStyledHelpText(unittest.TestCase):
+    """Markup in help= strings and docstrings is rendered to ANSI in --help."""
+
+    def _run_cli_script(self, script):
+        import subprocess
+
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return result.stdout, result.stderr, result.returncode
+
+    def test_markup_in_argument_help(self):
+        """Markup in Argument(help=...) renders to ANSI codes in --help."""
+        stdout, _, rc = self._run_cli_script("""
+import sys
+from turboterm.cli import command, Argument, run
+
+@command()
+def deploy(env: str = Argument(help="[bold]Target[/bold] environment")):
+    pass
+
+sys.argv = ["app", "deploy", "--help"]
+run()
+""")
+        self.assertEqual(rc, 0)
+        # [bold] renders to \x1b[1m, [/bold] resets with \x1b[0m
+        self.assertIn("\x1b[1m", stdout)
+        self.assertIn("Target", stdout)
+
+    def test_markup_in_option_help(self):
+        """Markup in Option(help=...) renders to ANSI codes in --help."""
+        stdout, _, rc = self._run_cli_script("""
+import sys
+from turboterm.cli import command, Option, run
+
+@command()
+def serve(
+    verbose: bool = Option(["--verbose"], help="[yellow]Verbose[/yellow] logging"),
+):
+    pass
+
+sys.argv = ["app", "serve", "--help"]
+run()
+""")
+        self.assertEqual(rc, 0)
+        self.assertIn("\x1b[33m", stdout)  # yellow
+        self.assertIn("Verbose", stdout)
+
+    def test_markup_in_docstring(self):
+        """Markup in command docstring renders to ANSI codes in --help."""
+        stdout, _, rc = self._run_cli_script("""
+import sys
+from turboterm.cli import command, run
+
+@command()
+def build():
+    "[bold cyan]Build[/bold cyan] the project."
+    pass
+
+sys.argv = ["app", "--help"]
+run()
+""")
+        self.assertEqual(rc, 0)
+        self.assertIn("\x1b[1m", stdout)  # bold
+        self.assertIn("\x1b[36m", stdout)  # cyan
+        self.assertIn("Build", stdout)
+
+    def test_plain_help_unchanged(self):
+        """Help text without markup is passed through as plain text."""
+        stdout, _, rc = self._run_cli_script("""
+import sys
+from turboterm.cli import command, Argument, run
+
+@command()
+def greet(name: str = Argument(help="Name to greet")):
+    "Say hello."
+    pass
+
+sys.argv = ["app", "greet", "--help"]
+run()
+""")
+        self.assertEqual(rc, 0)
+        self.assertIn("Name to greet", stdout)
+        self.assertIn("Say hello", stdout)
+
+    def test_color_in_argument_help(self):
+        """Color tags in Argument help render correct ANSI color codes."""
+        stdout, _, rc = self._run_cli_script("""
+import sys
+from turboterm.cli import command, Argument, run
+
+@command()
+def ping(
+    host: str = Argument(
+        help="[green]staging[/green] or [red]production[/red]"
+    )
+):
+    pass
+
+sys.argv = ["app", "ping", "--help"]
+run()
+""")
+        self.assertEqual(rc, 0)
+        self.assertIn("\x1b[32m", stdout)  # green
+        self.assertIn("\x1b[31m", stdout)  # red
+
+
 if __name__ == "__main__":
     unittest.main()
