@@ -16,21 +16,25 @@ class Console:
     @property
     def argument(self):
         from .cli import Argument
+
         return Argument
 
     @property
     def option(self):
         from .cli import Option
+
         return Option
 
     @property
     def command(self):
         from .cli import command
+
         return command
 
     @property
     def run(self):
         from .cli import run
+
         return run
 
 
