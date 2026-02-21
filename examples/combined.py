@@ -15,7 +15,7 @@ from turboterm.cli import Option, command, run
 
 # ── table shown in --help ──────────────────────────────────────────────────
 # Col1 visible width = 16, Col2 visible width = 22
-# Border = ┌/├/└ + 18×─ + ┬/┼/┴ + 24×─ + ┐/┤/┘  (total 45 chars)
+# Border = ┌/├/└ + 18x─ + ┬/┼/┴ + 24x─ + ┐/┤/┘  (total 45 chars)
 _H = "┌" + "─" * 18 + "┬" + "─" * 24 + "┐"
 _M = "├" + "─" * 18 + "┼" + "─" * 24 + "┤"
 _F = "└" + "─" * 18 + "┴" + "─" * 24 + "┘"
@@ -29,10 +29,10 @@ def _row(c1: str, c1_vis: int, c2: str, c2_vis: int) -> str:
 _MARKUP_TABLE = turboterm.apply_styles(
     "\nSupported markup tags:\n"
     + _H + "\n"
-    + _row("Tag",                          3,  "Renders as",                    10) + "\n"
+    + _row("Tag", 3, "Renders as", 10) + "\n"
     + _M + "\n"
-    + _row("[b]bold[/b]",                  4,  "[b]bold text[/b]",               9) + "\n"
-    + _row("[u]underline[/u]",             9,  "[u]underlined text[/u]",        15) + "\n"
+    + _row("[b]bold[/b]", 4, "[b]bold text[/b]", 9) + "\n"
+    + _row("[u]underline[/u]", 9, "[u]underlined text[/u]", 15) + "\n"
     + _row("[red]color[/red]",             5,  "[red]red foreground[/red]",      14) + "\n"
     + _row("[bold red]combined[/bold red]", 8, "[bold red]bold + colored[/bold red]", 14) + "\n"
     + _F
