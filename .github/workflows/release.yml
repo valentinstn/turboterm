@@ -5,83 +5,112 @@ on:
     types: [published]
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  linux:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            python-version: '3.x'
-            maturin-build-args: --release --out dist --find-interpreter
-            # target is inferred for manylinux on ubuntu-latest
-          - os: windows-latest
-            python-version: '3.x'
-            maturin-build-args: --release --out dist --find-interpreter
-            # target is inferred for win_amd64 on windows-latest
-          - os: macos-latest
-            python-version: '3.x'
-            maturin-build-args: --release --out dist --find-interpreter --universal2
-            # universal2 flag handles building for both x86_64 and aarch64 on macos-latest
-
+        target: [x86_64, aarch64]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-      
-      - name: Install uv
-        run: pip install uv # Assuming uv is not pre-installed or needed at this stage
-
-      - name: Create venv and install dependencies
-        run: uv venv && uv add mypy maturin
-      
-      - name: Build wheels (first pass)
-        # We need to run maturin build directly here to control the process more granularly
-        # PyO3/maturin-action@v1 simplifies things but we need specific steps for stubgen
-        run: |
-          uv run maturin build ${{ matrix.maturin-build-args }}
-      
-      - name: Generate .pyi stubs
-        run: |
-          uv run python -m mypy.stubgen -m turboterm -o turboterm/
-          # Ensure the generated stub is placed in the correct location for the package
-          # It's generated as turboterm/__init__.pyi, which is correct relative to the source
-      
-      - name: Build wheels (second pass with stubs)
-        run: |
-          uv run maturin build ${{ matrix.maturin-build-args }}
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels-${{ matrix.os }}
-          path: dist
-
-  upload_to_pypi:
-    name: Upload wheels to PyPI
-    needs: [build_wheels]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: wheels-ubuntu-latest
-          path: dist
-      - uses: actions/download-artifact@v3
-        with:
-          name: wheels-windows-latest
-          path: dist
-      - uses: actions/download-artifact@v3
-        with:
-          name: wheels-macos-latest
-          path: dist
-      - name: Publish to PyPI
+          python-version: '3.11'
+      - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          command: upload
-          args: --non-interactive --skip-existing *
-          repository: pypi
-          skip-existing: true
+          target: ${{ matrix.target }}
+          args: --release --out dist
+          sccache: 'true'
+          manylinux: auto
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.target }}
+          path: dist
+
+  windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        target: [x64, x86]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist
+          sccache: 'true'
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-windows-${{ matrix.target }}
+          path: dist
+
+  macos:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        target: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist
+          sccache: 'true'
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-${{ matrix.target }}
+          path: dist
+
+  sdist:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: dist
+
+  deploy:
+    needs: [linux, windows, macos, sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist
+      - name: Upload to PyPI
+        uses: PyO3/maturin-action@v1
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        with:
+          command: upload
+          args: --skip-existing dist/*
