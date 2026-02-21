@@ -196,7 +196,8 @@ def _generate_perf_chart(speedups: dict[str, float], subtitle: str) -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{height}">',
         f'  <rect width="{W}" height="{height}" fill="#0d1117" rx="10"/>',
         f'  <text x="{PAD_L}" y="36" fill="#e6edf3"'
-        f' font-family="{FONT}" font-size="14" font-weight="600">Faster than Rich</text>',
+        f' font-family="{FONT}" font-size="14"'
+        f' font-weight="600">Faster than Rich</text>',
         f'  <text x="{W - PAD_L}" y="36" fill="#6e7681"'
         f' font-family="{FONT}" font-size="11" text-anchor="end">{subtitle}</text>',
         f'  <line x1="{PAD_L}" y1="64" x2="{W - PAD_L}" y2="64"'

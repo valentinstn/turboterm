@@ -28,13 +28,25 @@ def _row(c1: str, c1_vis: int, c2: str, c2_vis: int) -> str:
 
 _MARKUP_TABLE = turboterm.apply_styles(
     "\nSupported markup tags:\n"
-    + _H + "\n"
-    + _row("Tag", 3, "Renders as", 10) + "\n"
-    + _M + "\n"
-    + _row("[b]bold[/b]", 4, "[b]bold text[/b]", 9) + "\n"
-    + _row("[u]underline[/u]", 9, "[u]underlined text[/u]", 15) + "\n"
-    + _row("[red]color[/red]",             5,  "[red]red foreground[/red]",      14) + "\n"
-    + _row("[bold red]combined[/bold red]", 8, "[bold red]bold + colored[/bold red]", 14) + "\n"
+    + _H
+    + "\n"
+    + _row("Tag", 3, "Renders as", 10)
+    + "\n"
+    + _M
+    + "\n"
+    + _row("[b]bold[/b]", 4, "[b]bold text[/b]", 9)
+    + "\n"
+    + _row("[u]underline[/u]", 9, "[u]underlined text[/u]", 15)
+    + "\n"
+    + _row("[red]color[/red]", 5, "[red]red foreground[/red]", 14)
+    + "\n"
+    + _row(
+        "[bold red]combined[/bold red]",
+        8,
+        "[bold red]bold + colored[/bold red]",
+        14,
+    )
+    + "\n"
     + _F
 )
 
@@ -45,7 +57,10 @@ _MARKUP_TABLE = turboterm.apply_styles(
 def show(
     project: str = Option(
         ["--project", "-p"],
-        help="[bold]Project[/bold] name — e.g. [cyan]turboterm[/cyan] or [cyan]myapp[/cyan]",
+        help=(
+            "[bold]Project[/bold] name"
+            " — e.g. [cyan]turboterm[/cyan] or [cyan]myapp[/cyan]"
+        ),
         default="turboterm",
     ),
     env: str = Option(
@@ -58,7 +73,7 @@ def show(
         help="Show [u]all[/u] benchmark metrics instead of a [bold]summary[/bold]",
     ),
 ):
-    """[bold green]Project Overview[/bold green] — [u]styled output[/u], tables, and CLI in one package.
+    """[bold green]Project Overview[/bold green] — styled output, tables, and CLI.
 
     Demonstrates [bold]bold[/bold], [u]underline[/u], [green]colors[/green], and
     [bold cyan]table rendering[/bold cyan] — all from a single Rust-backed import.
@@ -81,7 +96,7 @@ def show(
     console.print("[underline]Recent changes[/underline]")
     console.print(
         "  • [green]feat:[/green] [bold]table renderer[/bold]"
-        " — 10× faster, zero dependencies"
+        " — 10x faster, zero dependencies"
     )
     console.print(
         "  • [green]feat:[/green] [bold]CLI framework[/bold]"
@@ -96,10 +111,10 @@ def show(
 
     rows = [
         ["[b]Metric[/b]", "[b]TurboTerm[/b]", "[b]rich[/b]", "[b]Speedup[/b]"],
-        ["Import time", "[green]0.85 ms[/green]", "2.70 ms", "[bold cyan]3×[/bold cyan]"],
-        ["Styled output", "[green]1.85M/s[/green]", "215K/s", "[bold cyan]9×[/bold cyan]"],
-        ["Table render", "[green]9 835/s[/green]", "99/s", "[bold cyan]99×[/bold cyan]"],
-        ["End-to-end", "[green]0.79 ms[/green]", "28.9 ms", "[bold cyan]37×[/bold cyan]"],
+        ["Import time", "[green]0.85 ms[/green]", "2.70 ms", "[b cyan]3x[/b cyan]"],
+        ["Styled output", "[green]1.85M/s[/green]", "215K/s", "[b cyan]9x[/b cyan]"],
+        ["Table render", "[green]9 835/s[/green]", "99/s", "[b cyan]99x[/b cyan]"],
+        ["End-to-end", "[green]0.79 ms[/green]", "28.9 ms", "[b cyan]37x[/b cyan]"],
     ]
     if not verbose:
         rows = [rows[0], rows[-1]]
