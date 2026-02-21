@@ -24,6 +24,32 @@ the fastest possible performance with the smallest possible footprint.
 pip install turboterm
 ```
 
+## Quickstart
+
+```python
+from turboterm import console
+from turboterm.cli import Option, command, run
+
+@command
+def greet(
+    name: str = Option(["--name", "-n"], default="World"),
+):
+    """Greet someone."""
+    console.print(f"[bold]Hello, {name}![/bold]")
+
+if __name__ == "__main__":
+    run()
+```
+
+```
+python app.py --name Alice
+# Hello, Alice!
+
+python app.py --help
+```
+
+For the full API reference see [USAGE.md](USAGE.md).
+
 ## Development
 
 ```bash
