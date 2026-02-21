@@ -5,11 +5,11 @@
   <line x1="24" y1="64" x2="636" y2="64" stroke="#21262d" stroke-width="1"/>
   <text x="118" y="94" fill="#e6edf3" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">tables</text>
   <rect x="126" y="81" width="352" height="16" fill="#3fb950" rx="2"/>
-  <text x="636" y="94" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">96.3× faster</text>
+  <text x="636" y="94" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">97.1× faster</text>
   <text x="118" y="136" fill="#e6edf3" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">end-to-end</text>
-  <rect x="126" y="123" width="118" height="16" fill="#3fb950" rx="2"/>
-  <text x="636" y="136" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">32.5× faster</text>
+  <rect x="126" y="123" width="122" height="16" fill="#3fb950" rx="2"/>
+  <text x="636" y="136" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">33.8× faster</text>
   <text x="118" y="178" fill="#e6edf3" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">styling</text>
-  <rect x="126" y="165" width="31" height="16" fill="#3fb950" rx="2"/>
-  <text x="636" y="178" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">8.5× faster</text>
+  <rect x="126" y="165" width="30" height="16" fill="#3fb950" rx="2"/>
+  <text x="636" y="178" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12" text-anchor="end">8.3× faster</text>
 </svg>

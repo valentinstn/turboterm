@@ -5,18 +5,18 @@
   <line x1="24" y1="64" x2="636" y2="64" stroke="#21262d" stroke-width="1"/>
   <text x="118" y="94" fill="#e6edf3" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">turboterm</text>
   <rect x="126" y="81" width="10" height="16" fill="#3fb950" rx="2"/>
-  <text x="488" y="94" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">0.72 ms</text>
+  <text x="488" y="94" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">0.74 ms</text>
   <text x="636" y="94" fill="#3fb950" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">fastest</text>
   <text x="118" y="136" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">rich</text>
   <rect x="126" y="123" width="39" height="16" fill="#484f58" rx="2"/>
-  <text x="488" y="136" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">2.70 ms</text>
+  <text x="488" y="136" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">2.71 ms</text>
   <text x="636" y="136" fill="#6e7681" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">3.7× slower</text>
   <text x="118" y="178" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">click</text>
-  <rect x="126" y="165" width="177" height="16" fill="#484f58" rx="2"/>
-  <text x="488" y="178" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">12.18 ms</text>
-  <text x="636" y="178" fill="#6e7681" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">16.8× slower</text>
+  <rect x="126" y="165" width="185" height="16" fill="#484f58" rx="2"/>
+  <text x="488" y="178" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">12.62 ms</text>
+  <text x="636" y="178" fill="#6e7681" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">17.1× slower</text>
   <text x="118" y="220" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="13" text-anchor="end">typer</text>
   <rect x="126" y="207" width="352" height="16" fill="#484f58" rx="2"/>
-  <text x="488" y="220" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">24.13 ms</text>
-  <text x="636" y="220" fill="#6e7681" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">33.3× slower</text>
+  <text x="488" y="220" fill="#8b949e" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="12">23.89 ms</text>
+  <text x="636" y="220" fill="#6e7681" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace" font-size="11" text-anchor="end">32.3× slower</text>
 </svg>
