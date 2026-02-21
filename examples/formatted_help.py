@@ -32,7 +32,7 @@ def deploy(
         help="[yellow]Simulate[/yellow] the deploy without making changes",
     ),
 ):
-    """[bold]Deploy[/bold] the application to an environment."""
+    """[green][u]Deploy[/u] the application to an [bold]environment[/bold].[/green]"""
     if dry_run:
         console.print(
             f"[yellow]DRY RUN:[/yellow] would deploy [cyan]{tag}[/cyan] → {env}"
@@ -52,10 +52,11 @@ def rollback(
         default=1,
     ),
 ):
-    """[bold]Roll back[/bold] to a previous version.
+    """[orange][u]Roll back[/u] to a previous version.
 
     Rolls back [italic]steps[/italic] versions in the given environment.
-    Use [yellow]--dry-run[/yellow] on the deploy command to preview before reverting.
+    Use [bold]--dry-run[/bold] on the deploy command to preview before reverting.
+    [/orange]
     """
     console.print(f"[red]Rolled back[/red] {env} by [bold]{steps}[/bold] version(s)")
 

@@ -33,6 +33,7 @@ static STYLES: LazyLock<HashMap<&'static str, &'static str>> = LazyLock::new(|| 
     m.insert("magenta", "\x1b[35m");
     m.insert("cyan", "\x1b[36m");
     m.insert("white", "\x1b[37m");
+    m.insert("orange", "\x1b[38;5;208m");
 
     // Bright foreground colors
     m.insert("bright_black", "\x1b[90m");

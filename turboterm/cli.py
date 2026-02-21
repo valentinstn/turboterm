@@ -35,11 +35,13 @@ def Option(names: list[str], help: str = "", default: Any = _UNSET) -> Any:
     return _Option(names=names, help=help, default=default)
 
 
-def command(name: str | None = None):
+def command(name: str | None = None, after_help: str | None = None):
     """Decorator to register a function as a CLI command."""
 
     def decorator(func: Callable):
         cmd_name = name if name is not None else func.__name__
+        if after_help is not None:
+            _COMMAND_AFTER_HELP[cmd_name] = after_help
         sig = inspect.signature(func)
         params = []
 
@@ -104,7 +106,24 @@ def command(name: str | None = None):
     return decorator
 
 
+_COMMAND_AFTER_HELP: dict[str, str] = {}
+
+
 def run():
     import sys
 
-    _run_cli(sys.argv[1:])
+    args = sys.argv[1:]
+
+    after_help = None
+    if "--help" in args or "-h" in args:
+        for cmd_name in _COMMAND_AFTER_HELP:
+            if cmd_name in args:
+                after_help = _COMMAND_AFTER_HELP[cmd_name]
+                break
+        if after_help is None and _COMMAND_AFTER_HELP:
+            after_help = "\n".join(_COMMAND_AFTER_HELP.values())
+
+    _run_cli(args)
+
+    if after_help:
+        print(after_help)
