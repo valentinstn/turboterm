@@ -6,6 +6,7 @@ build-backend = "maturin"
 name = "turboterm"
 version = "0.1.0"
 requires-python = ">=3.11"
+readme = "README.md"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: 3",
@@ -15,6 +16,10 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = []
+
+[project.urls]
+Repository = "https://github.com/valentinstn/turboterm"
+Changelog = "https://github.com/valentinstn/turboterm/blob/main/CHANGELOG.md"
 
 [tool.maturin]
 stubgen = true
