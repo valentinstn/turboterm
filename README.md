@@ -48,7 +48,7 @@ python app.py --name Alice
 python app.py --help
 ```
 
-For the full API reference see [USAGE.md](USAGE.md).
+For the full API reference see [USAGE.md](https://github.com/valentinstn/turboterm/blob/main/USAGE.md).
 
 ## Development
 

@@ -2,6 +2,7 @@ use clap::{Arg, ArgAction, Command};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 use std::collections::HashMap;
 
 // --- Internal CLI parameter representation ---
@@ -35,6 +36,9 @@ static CLI_COMMAND_REGISTRY: std::sync::LazyLock<std::sync::Mutex<HashMap<String
 
 /// Register a command with pre-processed parameter metadata.
 /// Called from the Python `@command()` decorator which handles signature inspection.
+#[gen_stub_pyfunction(
+    python = "def register_command(name: str, func: typing.Any, doc: str | None = None, params: list[dict[str, typing.Any]] = ...) -> None: ..."
+)]
 #[pyfunction]
 #[pyo3(signature = (name, func, doc=None, params=vec![]))]
 pub fn register_command(
@@ -191,6 +195,7 @@ fn build_clap_app(commands: &[ClapCommandInfo]) -> Command {
     app
 }
 
+#[gen_stub_pyfunction(python = "def run_cli(args: list[str]) -> None: ...")]
 #[pyfunction]
 pub fn run_cli(py: Python, args: Vec<String>) -> PyResult<()> {
     // Phase 1: Snapshot clap-relevant data from registry (owned strings only)

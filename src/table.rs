@@ -1,11 +1,14 @@
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::{gen_stub_pyclass, gen_stub_pymethods};
 
 /// Formats a table from Python data.
+#[gen_stub_pyclass]
 #[pyclass]
 pub struct PyTable {
     rows: Vec<Vec<String>>,
 }
 
+#[gen_stub_pymethods]
 #[pymethods]
 impl PyTable {
     #[new]

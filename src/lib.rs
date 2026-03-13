@@ -1,11 +1,14 @@
 use pyo3::prelude::*;
 use pyo3::types::PyModule;
 use pyo3::Bound;
+use pyo3_stub_gen::define_stub_info_gatherer;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
 mod cli;
 mod lexer;
-mod table; // Add this line
+mod table;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 fn apply_styles(text: &str) -> PyResult<String> {
     Ok(lexer::apply_styles(text))
@@ -19,3 +22,5 @@ fn turboterm(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(cli::run_cli, m)?)?;
     Ok(())
 }
+
+define_stub_info_gatherer!(stub_info);

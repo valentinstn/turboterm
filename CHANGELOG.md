@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] — 2026-03-13
+
+- **feat:** add PEP 561 type stubs (`py.typed` marker, `.pyi` files for all public API)
+  - `turboterm/turboterm.pyi` — auto-generated from Rust source via `pyo3-stub-gen`; run `cargo run --bin stub_gen` to regenerate
+  - `turboterm/__init__.pyi`, `console.pyi`, `cli.pyi` — hand-written stubs for the Python wrapper layer
+- **fix:** move `extension-module` to an optional Cargo feature so `cargo clippy` and the stub generator binary work without it; maturin passes it automatically via `pyproject.toml`
+
+[0.1.3]: https://github.com/valentinstn/turboterm/releases/tag/v0.1.3
+
 ## [0.1.2] — 2026-02-21
 
 - **fix:** use absolute GitHub raw URLs for README images so they render correctly on PyPI

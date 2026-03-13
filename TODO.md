@@ -59,6 +59,6 @@ Was cancelled earlier due to newline complexity. Could revisit with a simpler sc
 All features are in place. Checklist:
 - [x] Update README benchmarks
 - [x] Update CHANGELOG
-- [ ] Generate type stubs
-- [ ] Tag v0.1.0
-- [ ] Trigger release workflow
+- [x] Generate type stubs
+- [x] Tag v0.1.3
+- [x] Trigger release workflow
