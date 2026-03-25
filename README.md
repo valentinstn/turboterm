@@ -28,8 +28,10 @@
 
 ## Installation
 
-```
+```sh
 pip install turboterm
+# or
+uv add turboterm
 ```
 
 ## Quickstart
