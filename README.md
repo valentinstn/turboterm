@@ -1,21 +1,29 @@
 <h1 align="center">TurboTerm</h1>
 <p align="center">
-    <em>⚡ A high-performance terminal styling and CLI toolkit for Python, written in Rust 🦀</em>
+    <em>⚡ A high-performance, ultra-concise CLI and styling toolkit for Python, written in Rust 🦀</em>
 </p>
+
+`TurboTerm` is minimal and efficient by all means:
+
+- **Less code**: Concise CLI syntax, ~50% less lines of code compared to Python's argparse.
+- **Faster import**: Lightweight import and loading times, multiple times faster than `rich`, `click` or `typer`.
+- **Faster runtime**: Every formatting/rendering logic is implemented in Rust, and optimized for performance.
+- **No additional dependencies**: TurboTerm is installed as a single wheel, without depending on any other Python package.
+- **No feature bloat**: TurboTerm focuses on the essentials: Decorators for minimal CLI, styled output, tables, and argument parsing.
+
+## Example
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/valentinstn/turboterm/main/assets/example.png" alt="Example output" width="500">
 </p>
 
-Styled output, tables, and argument parsing — all three from a single Rust-backed import.
-TurboTerm covers 90% of CLI use cases in a single package and aims to provide
-the fastest possible performance with the smallest possible footprint.
+## Benchmarks
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/valentinstn/turboterm/main/assets/benchmark.svg" alt="Import time comparison" width="500">
+    <img src="https://raw.githubusercontent.com/valentinstn/turboterm/main/assets/benchmark.svg" alt="Import time comparison" width="500">
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/valentinstn/turboterm/main/assets/perf.svg" alt="Performance vs Rich" width="500">
+    <img src="https://raw.githubusercontent.com/valentinstn/turboterm/main/assets/perf.svg" alt="Performance vs Rich" width="500">
 </p>
 
 ## Installation
